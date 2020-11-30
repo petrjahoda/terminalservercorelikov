@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$USER_HOME$/Library/Caches/JetBrains/Rider2020.2/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/Library/Caches/JetBrains/Rider2020.2/resharper-host/local/Transient/Rider/v202/SolutionCaches/_terminalservercorelikov.1050407309.00" t="ExcludeRecursive" />
+    <e p="$PROJECT_DIR$" t="IncludeRecursive">
+      <e p=".gitignore" t="Include" />
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="Config.cs" t="Include" />
+      <e p="obj" t="ExcludeRecursive">
+        <e p="Debug" t="Include">
+          <e p="netcoreapp2.2" t="Include">
+            <e p="terminalservercorelikov.AssemblyInfo.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Program.cs" t="Include" />
+      <e p="publish" t="Include">
+        <e p="Microsoft.Bcl.AsyncInterfaces.dll" t="Include" />
+        <e p="Microsoft.Extensions.Configuration.Abstractions.dll" t="Include" />
+        <e p="Microsoft.Extensions.Configuration.Binder.dll" t="Include" />
+        <e p="Microsoft.Extensions.Configuration.dll" t="Include" />
+        <e p="Microsoft.Extensions.Configuration.FileExtensions.dll" t="Include" />
+        <e p="Microsoft.Extensions.Configuration.Json.dll" t="Include" />
+        <e p="Microsoft.Extensions.DependencyInjection.Abstractions.dll" t="Include" />
+        <e p="Microsoft.Extensions.DependencyInjection.dll" t="Include" />
+        <e p="Microsoft.Extensions.FileProviders.Abstractions.dll" t="Include" />
+        <e p="Microsoft.Extensions.FileProviders.Physical.dll" t="Include" />
+        <e p="Microsoft.Extensions.FileSystemGlobbing.dll" t="Include" />
+        <e p="Microsoft.Extensions.Logging.Abstractions.dll" t="Include" />
+        <e p="Microsoft.Extensions.Logging.dll" t="Include" />
+        <e p="Microsoft.Extensions.Options.dll" t="Include" />
+        <e p="Microsoft.Extensions.Primitives.dll" t="Include" />
+        <e p="Microsoft.Win32.Registry.dll" t="Include" />
+        <e p="MySqlConnector.dll" t="Include" />
+        <e p="Newtonsoft.Json.dll" t="Include" />
+        <e p="runtimes" t="Include">
+          <e p="unix" t="Include">
+            <e p="lib" t="Include">
+              <e p="netcoreapp2.1" t="Include">
+                <e p="System.Data.SqlClient.dll" t="Include" />
+                <e p="System.Security.Principal.Windows.dll" t="Include" />
+              </e>
+              <e p="netstandard2.0" t="Include">
+                <e p="Microsoft.Win32.Registry.dll" t="Include" />
+              </e>
+            </e>
+          </e>
+          <e p="win" t="Include">
+            <e p="lib" t="Include">
+              <e p="netcoreapp2.0" t="Include">
+                <e p="System.Security.AccessControl.dll" t="Include" />
+                <e p="System.Text.Encoding.CodePages.dll" t="Include" />
+              </e>
+              <e p="netcoreapp2.1" t="Include">
+                <e p="System.Data.SqlClient.dll" t="Include" />
+                <e p="System.Security.Principal.Windows.dll" t="Include" />
+              </e>
+              <e p="netstandard2.0" t="Include">
+                <e p="Microsoft.Win32.Registry.dll" t="Include" />
+              </e>
+            </e>
+          </e>
+          <e p="win-arm64" t="Include">
+            <e p="native" t="Include">
+              <e p="sni.dll" t="Include" />
+            </e>
+          </e>
+          <e p="win-x64" t="Include">
+            <e p="native" t="Include">
+              <e p="sni.dll" t="Include" />
+            </e>
+          </e>
+          <e p="win-x86" t="Include">
+            <e p="native" t="Include">
+              <e p="sni.dll" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Serilog.dll" t="Include" />
+        <e p="Serilog.Extensions.Logging.dll" t="Include" />
+        <e p="Serilog.Extensions.Logging.File.dll" t="Include" />
+        <e p="Serilog.Formatting.Compact.dll" t="Include" />
+        <e p="Serilog.Sinks.Async.dll" t="Include" />
+        <e p="Serilog.Sinks.File.dll" t="Include" />
+        <e p="Serilog.Sinks.RollingFile.dll" t="Include" />
+        <e p="System.Data.SqlClient.dll" t="Include" />
+        <e p="System.Diagnostics.DiagnosticSource.dll" t="Include" />
+        <e p="System.Runtime.CompilerServices.Unsafe.dll" t="Include" />
+        <e p="System.Security.AccessControl.dll" t="Include" />
+        <e p="System.Security.Principal.Windows.dll" t="Include" />
+        <e p="System.Text.Encoding.CodePages.dll" t="Include" />
+        <e p="System.Text.Encodings.Web.dll" t="Include" />
+        <e p="System.Text.Json.dll" t="Include" />
+        <e p="terminalservercorelikov.deps.json" t="Include" />
+        <e p="terminalservercorelikov.dll" t="Include" />
+        <e p="terminalservercorelikov.pdb" t="Include" />
+        <e p="terminalservercorelikov.runtimeconfig.json" t="Include" />
+      </e>
+      <e p="terminalservercorelikov.csproj" t="IncludeRecursive" />
+      <e p="terminalservercorelikov.sln" t="IncludeFlat" />
+      <e p="Workplace.cs" t="Include" />
+    </e>
+  </component>
+</project>

@@ -1,10 +1,16 @@
-﻿﻿using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Text;
 using Microsoft.Extensions.Logging;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using static System.Console;
 
 namespace terminalServerCore {
+    
+    
     public enum StateType {
         Idle,
         Running,
@@ -12,6 +18,7 @@ namespace terminalServerCore {
     }
 
     public class Workplace {
+        public const string NavUrl = "http://localhost:8000/send";
         public int Oid { get; set; }
         public string Name { get; set; }
         public int DeviceOid { get; set; }
@@ -28,6 +35,8 @@ namespace terminalServerCore {
         public int? OrderUserId { get; set; }
         public StateType ActualStateType { get; set; }
         public int WorkplaceIdleId { get; set; }
+        
+        public string Code  { get; set; }
 
         public Workplace() {
             Oid = Oid;
@@ -45,9 +54,9 @@ namespace terminalServerCore {
         }
 
         public void CloseIdleForWorkplace(DateTime dateTimeToInsert, ILogger logger) {
-            LogError("[ " + Name + " ] --INF-- CLose automatic idle: " + Program.CloseOnlyAutomaticIdles, logger);
-
             if (Program.CloseOnlyAutomaticIdles.Equals("1")) {
+                SendAllXmlData(logger);
+                LogError("[ " + Name + " ] --INF-- Closing automatic idle: " + Program.CloseOnlyAutomaticIdles, logger);
                 var dateToInsert = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now);
 
                 var connection = new MySqlConnection(
@@ -74,6 +83,8 @@ namespace terminalServerCore {
                     connection.Dispose();
                 }
             } else {
+                LogError("[ " + Name + " ] --INF-- Closing idle: " + Program.CloseOnlyAutomaticIdles, logger);
+                SendAllXmlData(logger);
                 var dateToInsert = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now);
 
                 var connection = new MySqlConnection(
@@ -104,6 +115,324 @@ namespace terminalServerCore {
             }
 
             LogInfo("[ " + Name + " ] --INF-- Terminal_input_idle closed", logger);
+        }
+
+        private void SendAllXmlData(ILogger logger) {
+            var openIdleIsTypeFour = CheckOpenIdleForTypeFour(logger);
+            if (openIdleIsTypeFour) {
+                var listOfUsers = GetAdditionalUsersFor(logger);
+                var listOfLoginUsers = GetLoginUsersFor(logger);
+                foreach (var actualUserId in listOfUsers) {
+                    LogInfo("[ " + Name + " ] --INF-- Sending XMl data for userID " +actualUserId, logger);
+                    var actualOrderId = GetOrderIdFor(logger);
+                    var orderNo = GetOrderNo(actualOrderId, logger);
+                    var operationNo = GetOperationNo(actualOrderId, logger);
+                    var workcenter = GetWorkcenter(actualUserId, logger);
+                    var userData = "xml=" +
+                                   "<ZAPSIoperations>" +
+                                   "<ZAPSIoperation>" +
+                                   "<type>AL</type>" +
+                                   "<orderno>" + orderNo + "</orderno>" +
+                                   "<operationno>" + operationNo + "</operationno>" +
+                                   "<workcenter>" + workcenter + "</workcenter>" +
+                                   "<machinecenter>" + Code + "</machinecenter>" +
+                                   "<operationtype>Production</operationtype>" +
+                                   "<initiator>True</initiator>" +
+                                   "<startdate>DateTime.Now.ToString(CultureInfo.InvariantCulture) + </startdate>" +
+                                   "<enddate/>" +
+                                   "<consofmeters/>" +
+                                   "<motorhours/>" +
+                                   "<cuts/>" +
+                                   "<note/>" +
+                                   "</ZAPSIoperation>" +
+                                   "</ZAPSIoperations>";
+                    SendXml(NavUrl, userData, logger);
+                }
+
+                foreach (var actualUserId in listOfLoginUsers) {
+                    if (!listOfUsers.Contains(actualUserId)) {
+                        LogInfo("[ " + Name + " ] --INF-- Sending XMl data for userID " +actualUserId, logger);
+                        var actualOrderId = GetOrderIdFor(logger);
+                        var orderNo = GetOrderNo(actualOrderId, logger);
+                        var operationNo = GetOperationNo(actualOrderId, logger);
+                        var workcenter = GetWorkcenter(actualUserId, logger);
+                        var userData = "xml=" +
+                                       "<ZAPSIoperations>" +
+                                       "<ZAPSIoperation>" +
+                                       "<type>AL</type>" +
+                                       "<orderno>" + orderNo + "</orderno>" +
+                                       "<operationno>" + operationNo + "</operationno>" +
+                                       "<workcenter>" + workcenter + "</workcenter>" +
+                                       "<machinecenter>" + Code + "</machinecenter>" +
+                                       "<operationtype>Spare</operationtype>" +
+                                       "<initiator>True</initiator>" +
+                                       "<startdate>DateTime.Now.ToString(CultureInfo.InvariantCulture) + </startdate>" +
+                                       "<enddate/>" +
+                                       "<consofmeters/>" +
+                                       "<motorhours/>" +
+                                       "<cuts/>" +
+                                       "<note/>" +
+                                       "</ZAPSIoperation>" +
+                                       "</ZAPSIoperations>";
+                        SendXml(NavUrl, userData, logger);
+                    }
+                }
+            }
+        }
+
+        private List<int> GetLoginUsersFor(ILogger logger) {
+            var listOfUsers = new List<int>();
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * FROM zapsi2.terminal_input_order_user where TerminalInputOrderID = (SELECT OID from zapsi2.terminal_input_order where DTE is NULL and DeviceID={DeviceOid})";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        var userId = Convert.ToInt32(reader["UserID"]);
+                        listOfUsers.Add(userId);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking terminal input order users: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- Open order has no of additional users: " + listOfUsers.Count, logger);
+
+            return listOfUsers;
+        }
+
+        string SendXml(string destinationUrl, string requestXml, ILogger logger) {
+            LogInfo("[ " + Name + " ] --INF-- Data: " +requestXml, logger);
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(destinationUrl);
+            byte[] bytes = Encoding.UTF8.GetBytes(requestXml);
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.ContentLength = bytes.Length;
+            request.Method = "POST";
+            Stream requestStream = request.GetRequestStream();
+            requestStream.Write(bytes, 0, bytes.Length);
+            HttpWebResponse response;
+            response = (HttpWebResponse) request.GetResponse();
+            if (response.StatusCode == HttpStatusCode.OK) {
+                Stream responseStream = response.GetResponseStream();
+                string responseStr = new StreamReader(responseStream).ReadToEnd();
+                return responseStr;
+            }
+
+            return null;
+        }
+        
+        private string GetOperationNo(int actualOrderId, ILogger logger) {
+            var operation = "error getting order operation";
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.order where OID={actualOrderId}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        operation = Convert.ToString(reader["OperationNo"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking operationNo: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- Open order has operation: " + operation, logger);
+            return operation;
+        }
+        private string GetOrderNo(int actualOrderId, ILogger logger) {
+            var orderBarcode = "error getting order barcode";
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.order where OID={actualOrderId}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        orderBarcode = Convert.ToString(reader["Barcode"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking active order: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- Open order has barcode: " + orderBarcode, logger);
+            return orderBarcode;
+        }
+        private int GetOrderIdFor(ILogger logger) {
+            var orderId = 1;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.terminal_input_order where DTE is NULL and DeviceID={DeviceOid}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        orderId = Convert.ToInt32(reader["OrderID"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking active order: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- Open order has orderid: " + orderId, logger);
+
+            return orderId;
+        }
+        
+        private string GetWorkcenter(int userId, ILogger logger) {
+            var userLogin = "error getting user login";
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.user where OID={userId}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        userLogin = Convert.ToString(reader["Login"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking user login: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- User has login: " + userLogin, logger);
+            return userLogin;
+        }
+        
+        private  List<int> GetAdditionalUsersFor(ILogger logger) {
+            var listOfUsers = new List<int>();
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * FROM zapsi2.terminal_input_order_user where TerminalInputOrderID = (SELECT OID from zapsi2.terminal_input_order where DTE is NULL and DeviceID={DeviceOid})";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        var userId = Convert.ToInt32(reader["UserID"]);
+                        listOfUsers.Add(userId);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking terminal input order users: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- Open order has no of additional users: " + listOfUsers.Count, logger);
+
+            return listOfUsers;
+        }
+
+        private bool CheckOpenIdleForTypeFour(ILogger logger) {
+            var openIdleIsTypeFour = false;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * FROM zapsi2.idle where OID in (SELECT IdleId from zapsi2.terminal_input_idle where DTE is NULL and DeviceId = {DeviceOid}) and IdleTypeID=4";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        openIdleIsTypeFour = true;
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking idles for idletype=4: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- Open idle is type four: " + openIdleIsTypeFour, logger);
+
+            return openIdleIsTypeFour;
         }
 
         private static void LogInfo(string text, ILogger logger) {

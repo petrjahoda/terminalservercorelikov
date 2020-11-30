@@ -18,7 +18,7 @@ namespace terminalServerCore {
         public string SmtpPort { get; set; }
 
         public  Config() {
-            Ipaddress = "zapsidatabase";
+            Ipaddress = "localhost";
             Port = "3306";
             Database = "zapsi2";
             Login = "zapsi_uzivatel";
