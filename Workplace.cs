@@ -138,7 +138,7 @@ namespace terminalServerCore {
                                    "<machinecenter>" + Code + "</machinecenter>" +
                                    "<operationtype>Production</operationtype>" +
                                    "<initiator>True</initiator>" +
-                                   "<startdate>DateTime.Now.ToString(CultureInfo.InvariantCulture) + </startdate>" +
+                                   "<startdate>"+ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "</startdate>" +
                                    "<enddate/>" +
                                    "<consofmeters/>" +
                                    "<motorhours/>" +
@@ -166,7 +166,7 @@ namespace terminalServerCore {
                                        "<machinecenter>" + Code + "</machinecenter>" +
                                        "<operationtype>Spare</operationtype>" +
                                        "<initiator>True</initiator>" +
-                                       "<startdate>DateTime.Now.ToString(CultureInfo.InvariantCulture) + </startdate>" +
+                                       "<startdate>"+ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "</startdate>" +
                                        "<enddate/>" +
                                        "<consofmeters/>" +
                                        "<motorhours/>" +

@@ -29,59 +29,10 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1d44921a-99e7-44c4-993c-8fd2020c115c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Config.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Config.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Workplace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Workplace.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Bcl.AsyncInterfaces.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.Configuration.Abstractions.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.Configuration.Binder.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.Configuration.FileExtensions.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.Configuration.Json.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.Configuration.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.DependencyInjection.Abstractions.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.DependencyInjection.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.FileProviders.Abstractions.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.FileProviders.Physical.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.FileSystemGlobbing.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.Logging.Abstractions.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.Logging.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.Options.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Extensions.Primitives.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Microsoft.Win32.Registry.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/MySqlConnector.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Newtonsoft.Json.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Serilog.Extensions.Logging.File.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Serilog.Extensions.Logging.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Serilog.Formatting.Compact.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Serilog.Sinks.Async.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Serilog.Sinks.File.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Serilog.Sinks.RollingFile.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Serilog.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/System.Data.SqlClient.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/System.Diagnostics.DiagnosticSource.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/System.Runtime.CompilerServices.Unsafe.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/System.Security.AccessControl.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/System.Security.Principal.Windows.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/System.Text.Encoding.CodePages.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/System.Text.Encodings.Web.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/System.Text.Json.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/unix/lib/netcoreapp2.1/System.Security.Principal.Windows.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/unix/lib/netstandard2.0/Microsoft.Win32.Registry.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/win-arm64/native/sni.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/win-x64/native/sni.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/win-x86/native/sni.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/win/lib/netcoreapp2.0/System.Security.AccessControl.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/win/lib/netcoreapp2.0/System.Text.Encoding.CodePages.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/win/lib/netcoreapp2.1/System.Security.Principal.Windows.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/runtimes/win/lib/netstandard2.0/Microsoft.Win32.Registry.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/terminalservercorelikov.deps.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/terminalservercorelikov.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/terminalservercorelikov.pdb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/terminalservercorelikov.runtimeconfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/terminalservercorelikov.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/terminalservercorelikov.csproj" afterDir="false" />
+    <list default="true" id="1d44921a-99e7-44c4-993c-8fd2020c115c" name="Default Changelist" comment="Updated">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,14 +41,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/Workplace.cs" />
-        <option value="$PROJECT_DIR$/Program.cs" />
-      </list>
-    </option>
   </component>
   <component name="ProjectId" id="1l0BHyOus9b5zr7y6kgXRN2RfRz" />
   <component name="ProjectViewState">
@@ -148,8 +91,18 @@
       <workItem from="1606724047113" duration="93000" />
       <workItem from="1606725871665" duration="199000" />
       <workItem from="1606726523424" duration="649000" />
-      <workItem from="1606732701434" duration="489000" />
+      <workItem from="1606732701434" duration="632000" />
+      <workItem from="1607408870818" duration="96000" />
+      <workItem from="1608028190826" duration="491000" />
     </task>
+    <task id="LOCAL-00001" summary="Updated">
+      <created>1606733450250</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1606733450250</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -181,10 +134,18 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated" />
+  </component>
   <component name="WindowStateProjectService">
     <state x="277" y="196" width="1071" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1606733284507">
       <screen x="0" y="25" width="1626" height="1025" />
     </state>
     <state x="277" y="196" width="1071" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.25.1626.1025@0.25.1626.1025" timestamp="1606733284507" />
+    <state x="413" y="274" key="Vcs.Push.Dialog.v2" timestamp="1606733451774">
+      <screen x="0" y="25" width="1626" height="1025" />
+    </state>
+    <state x="413" y="274" key="Vcs.Push.Dialog.v2/0.25.1626.1025@0.25.1626.1025" timestamp="1606733451774" />
   </component>
 </project>
