@@ -29,10 +29,12 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1d44921a-99e7-44c4-993c-8fd2020c115c" name="Default Changelist" comment="Updated">
+    <list default="true" id="1d44921a-99e7-44c4-993c-8fd2020c115c" name="Default Changelist" comment="Updated startdate in XML to &quot;&lt;startdate&gt;&quot;+ DateTime.Now.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;) + &quot;&lt;/startdate&gt;&quot; +">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Workplace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Workplace.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/terminalservercorelikov.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/terminalservercorelikov.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +43,12 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <changedPaths>
+      <option value="$PROJECT_DIR$/Workplace.cs" />
+      <option value="$PROJECT_DIR$/Program.cs" />
+    </changedPaths>
   </component>
   <component name="ProjectId" id="1l0BHyOus9b5zr7y6kgXRN2RfRz" />
   <component name="ProjectViewState">
@@ -94,6 +102,11 @@
       <workItem from="1606732701434" duration="632000" />
       <workItem from="1607408870818" duration="96000" />
       <workItem from="1608028190826" duration="491000" />
+      <workItem from="1608033063321" duration="151000" />
+      <workItem from="1613380491830" duration="92000" />
+      <workItem from="1613382791540" duration="6000" />
+      <workItem from="1613383631648" duration="141000" />
+      <workItem from="1613463179655" duration="643000" />
     </task>
     <task id="LOCAL-00001" summary="Updated">
       <created>1606733450250</created>
@@ -102,7 +115,14 @@
       <option name="project" value="LOCAL" />
       <updated>1606733450250</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Updated startdate in XML to &quot;&lt;startdate&gt;&quot;+ DateTime.Now.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;) + &quot;&lt;/startdate&gt;&quot; +">
+      <created>1608033156000</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1608033156000</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -136,16 +156,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="277" y="196" width="1071" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1606733284507">
-      <screen x="0" y="25" width="1626" height="1025" />
-    </state>
-    <state x="277" y="196" width="1071" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.25.1626.1025@0.25.1626.1025" timestamp="1606733284507" />
-    <state x="413" y="274" key="Vcs.Push.Dialog.v2" timestamp="1606733451774">
-      <screen x="0" y="25" width="1626" height="1025" />
-    </state>
-    <state x="413" y="274" key="Vcs.Push.Dialog.v2/0.25.1626.1025@0.25.1626.1025" timestamp="1606733451774" />
+    <MESSAGE value="Updated startdate in XML to &quot;&lt;startdate&gt;&quot;+ DateTime.Now.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;) + &quot;&lt;/startdate&gt;&quot; +" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated startdate in XML to &quot;&lt;startdate&gt;&quot;+ DateTime.Now.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;) + &quot;&lt;/startdate&gt;&quot; +" />
   </component>
 </project>

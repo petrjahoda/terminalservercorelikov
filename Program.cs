@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -51,6 +52,7 @@ namespace terminalServerCore {
         private static string _smtpPort;
         private static string _smtpUsername;
         private static string _smtpPassword;
+        private static string NavUrl = "http://localhost:8000/send";
 
         private static void Main() {
             _systemIsActivated = false;
@@ -490,6 +492,35 @@ namespace terminalServerCore {
                         var workplaceHasActiveIdle = workplace.CheckIfWorkplaceHasActivedIdle(logger);
                         if (workplaceHasActiveOrder) {
                             LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Closing order", logger);
+                            var userLogin = GetUserLoginFor(workplace, logger);
+                            var actualOrderId = GetOrderIdFor(workplace, logger);
+                            var orderNo = GetOrderNo(workplace, actualOrderId, logger);
+                            var operationNo = GetOperationNo(workplace, actualOrderId, logger);
+                            var divisionName = "AL";
+                            if (workplace.WorkplaceDivisionId == 3) {
+                                divisionName = "AL";
+                            }
+                            var consOfMeters = GetConsOfMetersFor(workplace, logger);
+                            var motorHours = GetMotorHoursFor(workplace, logger);
+                            var cuts = GetCutsFor(workplace, logger);
+                            var orderStartTime = GetOrderStartTime(workplace, actualOrderId, logger);
+                            var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                            // posila se xml TECHNOLOGY za hlavniho uzivatele
+                            var orderData = CreateXmlTechnology(workplace, divisionName, orderNo, operationNo, userLogin, orderStartTime, time, "Technology", "true", consOfMeters, motorHours, cuts);
+                            workplace.SendXml(NavUrl, orderData, logger);
+                            // posila se za xml ENDWORK za hlavniho uzivatele
+                            var userData = CreateXml(workplace, divisionName, orderNo, operationNo, userLogin, time, "EndWork", "true");
+                            workplace.SendXml(NavUrl, userData, logger);
+                            var listOfUsers = GetAdditionalUsersFor(workplace, logger);
+                            
+                            foreach (var actualUserLogin in listOfUsers) {
+                                // posila se za xml ENDWORK za vedlejsi uzivatele
+                                var additionalUserData = CreateXml(workplace, divisionName, orderNo, operationNo, actualUserLogin, time, "EndWork", "false");
+                                workplace.SendXml(NavUrl, additionalUserData, logger);
+                            }
+                            // posila se za xml FINISH za hlavniho uzivatele
+                            userData = CreateXml(workplace, divisionName, orderNo, operationNo, userLogin, time, "Finish", "true");
+                            workplace.SendXml(NavUrl, userData, logger);
                             var actualDate = DateTime.Now;
                             workplace.CloseOrderForWorkplace(actualDate, true, logger);
                             workplace.UpdateWorkplaceIdleTime(logger);
@@ -520,6 +551,355 @@ namespace terminalServerCore {
                 LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Process ended.", logger);
                 _numberOfRunningWorkplaces--;
             }
+        }
+        
+        private static List<string> GetAdditionalUsersFor(Workplace workplace, ILogger logger) {
+            var listOfUsers = new List<string>();
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery =
+                    $"select * from User where OID in (SELECT UserId FROM zapsi2.terminal_input_order_user where TerminalInputOrderID = (SELECT OID from zapsi2.terminal_input_order where DTE is NULL and DeviceID={workplace.DeviceOid}))";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        var userId = Convert.ToString(reader["Login"]);
+                        listOfUsers.Add(userId);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + workplace.Name + " ] --ERR-- Problem checking terminal input order users: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + workplace.Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + workplace.Name + " ] --INF-- Open order has no of additional users: " + listOfUsers.Count, logger);
+
+            return listOfUsers;
+        }
+        
+        private static string CreateXml(Workplace workplace, string divisionName, string orderNo, string operationNo, string userLogin, string time, string operationType, string initiator) {
+            var data = "xml=" +
+                       "<ZAPSIoperations>" +
+                       "<ZAPSIoperation>" +
+                       "<type>" + divisionName + "</type>" +
+                       "<orderno>" + orderNo + "</orderno>" +
+                       "<operationno>" + operationNo + "</operationno>" +
+                       "<workcenter>" + workplace.Code + "</workcenter>" +
+                       "<machinecenter>" + userLogin + "</machinecenter>" +
+                       "<operationtype>" + operationType + "</operationtype>" +
+                       "<initiator>" + initiator + "</initiator>" +
+                       "<startdate>" + time + ".000</startdate>" +
+                       "<enddate/>" +
+                       "<consofmeters/>" +
+                       "<motorhours/>" +
+                       "<cuts/>" +
+                       "<note/>" +
+                       "</ZAPSIoperation>" +
+                       "</ZAPSIoperations>";
+            return data;
+        }
+        
+        private static string CreateXmlTechnology(Workplace workplace, string divisionName, string orderNo, string operationNo, string userLogin, string startDate, string endDate, string operationType,
+            string initiator, string consOfMeters, string motorHours, string cuts) {
+            var data = "xml=" +
+                       "<ZAPSIoperations>" +
+                       "<ZAPSIoperation>" +
+                       "<type>" + divisionName + "</type>" +
+                       "<orderno>" + orderNo + "</orderno>" +
+                       "<operationno>" + operationNo + "</operationno>" +
+                       "<workcenter>" + workplace.Code + "</workcenter>" +
+                       "<machinecenter>" + userLogin + "</machinecenter>" +
+                       "<operationtype>" + operationType + "</operationtype>" +
+                       "<initiator>" + initiator + "</initiator>" +
+                       "<startdate>" + startDate + ".000</startdate>" +
+                       "<enddate>" + endDate + ".000</enddate>" +
+                       "<consofmeters>" + consOfMeters + "</consofmeters>" +
+                       "<motorhours>" + motorHours + "</motorhours>" +
+                       "<cuts>" + cuts + "</cuts>" +
+                       "<note/>" +
+                       "</ZAPSIoperation>" +
+                       "</ZAPSIoperations>";
+            return data;
+        }
+        private static string GetOrderStartTime(Workplace workplace, int actualOrderId, ILogger logger) {
+            var orderId = DateTime.Now;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.terminal_input_order where OID={actualOrderId}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        orderId = Convert.ToDateTime(reader["DTS"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + workplace.Name + " ] --ERR-- Problem checking DTS active order: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + workplace.Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            return orderId.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+        
+        private static string GetConsOfMetersFor(Workplace workplace, ILogger logger) {
+            var consOfMeters = 0;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery =
+                    $"SELECT SUM(Data) as result FROM zapsi2.device_input_analog where deviceportid=(SELECT DevicePortID FROM zapsi2.workplace_port where DevicePortId = 111 and WorkplaceID = {workplace.Oid}) and Dt > (SELECT DTS from zapsi2.terminal_input_order where DTE is NULL and DeviceID={workplace.DeviceOid})";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        consOfMeters = Convert.ToInt32(reader["result"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + workplace.Name + " ] --ERR-- Problem checking cons of meters: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + workplace.Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + workplace.Name + " ] --INF-- Open order cons of meters: " + consOfMeters, logger);
+
+            return consOfMeters.ToString();
+        }
+
+        private static string GetMotorHoursFor(Workplace workplace, ILogger logger) {
+            var cuts = 0;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.terminal_input_order where DTE is NULL and DeviceID={workplace.DeviceOid}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        cuts = Convert.ToInt32(reader["Interval"]);
+                    }
+
+                    cuts /= 3600;
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + workplace.Name + " ] --ERR-- Problem checking active order: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + workplace.Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + workplace.Name + " ] --INF-- Open order has interval / 3600: " + cuts, logger);
+
+            return cuts.ToString(CultureInfo.InvariantCulture);
+        }
+
+        private static string GetCutsFor(Workplace workplace, ILogger logger) {
+            var cuts = "error getting order count";
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.terminal_input_order where DTE is NULL and DeviceID={workplace.DeviceOid}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        cuts = Convert.ToString(reader["Count"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + workplace.Name + " ] --ERR-- Problem checking active order: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + workplace.Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + workplace.Name + " ] --INF-- Open order has count: " + cuts, logger);
+
+            return cuts;
+        }
+        private static string GetOperationNo(Workplace workplace, int actualOrderId, ILogger logger) {
+            var operation = "error getting order operation";
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.order where OID={actualOrderId}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        operation = Convert.ToString(reader["OperationNo"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + workplace.Name + " ] --ERR-- Problem checking operationNo: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + workplace.Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + workplace.Name + " ] --INF-- Open order has operation: " + operation, logger);
+            return operation;
+        }
+        
+        private static string GetOrderNo(Workplace workplace, int actualOrderId, ILogger logger) {
+            var orderBarcode = "error getting order barcode";
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.order where OID={actualOrderId}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        orderBarcode = Convert.ToString(reader["Barcode"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + workplace.Name + " ] --ERR-- Problem checking active order: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + workplace.Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + workplace.Name + " ] --INF-- Open order has barcode: " + orderBarcode, logger);
+            return orderBarcode;
+        }
+        
+        private static int GetOrderIdFor(Workplace workplace, ILogger logger) {
+            var orderId = 1;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.terminal_input_order where DTE is NULL and DeviceID={workplace.DeviceOid}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        orderId = Convert.ToInt32(reader["OrderID"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + workplace.Name + " ] --ERR-- Problem checking active order: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + workplace.Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + workplace.Name + " ] --INF-- Open order has orderid: " + orderId, logger);
+
+            return orderId;
+        }
+        
+        private static string GetUserLoginFor(Workplace workplace, ILogger logger) {
+            var userLogin = "";
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"select * from User where OID in (SELECT UserId from zapsi2.terminal_input_order where DTE is NULL and DeviceID={workplace.DeviceOid})";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        userLogin = Convert.ToString(reader["Login"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + workplace.Name + " ] --ERR-- Problem checking active order: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + workplace.Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + workplace.Name + " ] --INF-- Open order has userId: " + userLogin, logger);
+
+            return userLogin;
         }
 
 

@@ -215,7 +215,7 @@ namespace terminalServerCore {
             return listOfUsers;
         }
 
-        string SendXml(string destinationUrl, string requestXml, ILogger logger) {
+        public string SendXml(string destinationUrl, string requestXml, ILogger logger) {
             LogInfo("[ " + Name + " ] --INF-- Data: " +requestXml, logger);
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(destinationUrl);
             byte[] bytes = Encoding.UTF8.GetBytes(requestXml);
