@@ -120,79 +120,98 @@ namespace terminalServerCore {
         private void SendAllXmlData(ILogger logger) {
             var openIdleIsTypeFour = CheckOpenIdleForTypeFour(logger);
             if (openIdleIsTypeFour) {
+                var userLogin = GetUserLoginFor(logger);
+                var actualOrderId = GetOrderIdFor(logger);
+                var orderNo = GetOrderNo(actualOrderId, logger);
+                var operationNo = GetOperationNo(actualOrderId, logger);
+                var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                var divisionName = "AL";
+                var orderData = CreateXml(divisionName, orderNo, operationNo, userLogin, time, "Production", "true");
+                LogInfo("[ " + Name + " ] --INF-- Sending production/true XML for user: "  +userLogin, logger);
+                SendXml(NavUrl, orderData, logger);
                 var listOfUsers = GetAdditionalUsersFor(logger);
-                var listOfLoginUsers = GetLoginUsersFor(logger);
-                foreach (var actualUserId in listOfUsers) {
-                    LogInfo("[ " + Name + " ] --INF-- Sending XMl data for userID " +actualUserId, logger);
-                    var actualOrderId = GetOrderIdFor(logger);
-                    var orderNo = GetOrderNo(actualOrderId, logger);
-                    var operationNo = GetOperationNo(actualOrderId, logger);
-                    var workcenter = GetWorkcenter(actualUserId, logger);
-                    var userData = "xml=" +
-                                   "<ZAPSIoperations>" +
-                                   "<ZAPSIoperation>" +
-                                   "<type>AL</type>" +
-                                   "<orderno>" + orderNo + "</orderno>" +
-                                   "<operationno>" + operationNo + "</operationno>" +
-                                   "<workcenter>" + workcenter + "</workcenter>" +
-                                   "<machinecenter>" + Code + "</machinecenter>" +
-                                   "<operationtype>Production</operationtype>" +
-                                   "<initiator>True</initiator>" +
-                                   "<startdate>"+ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "</startdate>" +
-                                   "<enddate/>" +
-                                   "<consofmeters/>" +
-                                   "<motorhours/>" +
-                                   "<cuts/>" +
-                                   "<note/>" +
-                                   "</ZAPSIoperation>" +
-                                   "</ZAPSIoperations>";
+                foreach (var actualUserLogin in listOfUsers) {
+                    var userData = CreateXml( divisionName, orderNo, operationNo, actualUserLogin, time, "Production", "false");
+                    LogInfo("[ " + Name + " ] --INF-- Sending production/false XML for additional user: "  +userLogin, logger);
                     SendXml(NavUrl, userData, logger);
                 }
-
-                foreach (var actualUserId in listOfLoginUsers) {
-                    if (!listOfUsers.Contains(actualUserId)) {
-                        LogInfo("[ " + Name + " ] --INF-- Sending XMl data for userID " +actualUserId, logger);
-                        var actualOrderId = GetOrderIdFor(logger);
-                        var orderNo = GetOrderNo(actualOrderId, logger);
-                        var operationNo = GetOperationNo(actualOrderId, logger);
-                        var workcenter = GetWorkcenter(actualUserId, logger);
-                        var userData = "xml=" +
-                                       "<ZAPSIoperations>" +
-                                       "<ZAPSIoperation>" +
-                                       "<type>AL</type>" +
-                                       "<orderno>" + orderNo + "</orderno>" +
-                                       "<operationno>" + operationNo + "</operationno>" +
-                                       "<workcenter>" + workcenter + "</workcenter>" +
-                                       "<machinecenter>" + Code + "</machinecenter>" +
-                                       "<operationtype>Spare</operationtype>" +
-                                       "<initiator>True</initiator>" +
-                                       "<startdate>"+ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "</startdate>" +
-                                       "<enddate/>" +
-                                       "<consofmeters/>" +
-                                       "<motorhours/>" +
-                                       "<cuts/>" +
-                                       "<note/>" +
-                                       "</ZAPSIoperation>" +
-                                       "</ZAPSIoperations>";
-                        SendXml(NavUrl, userData, logger);
-                    }
+                var loginUsers = GetLoginUsersFor(logger);
+                foreach (var actualUserLogin in loginUsers) {
+                    var userData = CreateXml( divisionName, orderNo, operationNo, actualUserLogin, time, "Spare", "false");
+                    LogInfo("[ " + Name + " ] --INF-- Sending spare/false XML for login user: "  +userLogin, logger);
+                    SendXml(NavUrl, userData, logger);
                 }
             }
         }
 
-        private List<int> GetLoginUsersFor(ILogger logger) {
-            var listOfUsers = new List<int>();
+        private string CreateXml(string divisionName, string orderNo, string operationNo, string userLogin, string time, string operationType, string initiator) {
+            var data = "xml=" +
+                       "<ZAPSIoperations>" +
+                       "<ZAPSIoperation>" +
+                       "<type>" + divisionName + "</type>" +
+                       "<orderno>" + orderNo + "</orderno>" +
+                       "<operationno>" + operationNo + "</operationno>" +
+                       "<workcenter>" + Code + "</workcenter>" +
+                       "<machinecenter>" + userLogin + "</machinecenter>" +
+                       "<operationtype>" + operationType + "</operationtype>" +
+                       "<initiator>" + initiator + "</initiator>" +
+                       "<startdate>" + time + ".000</startdate>" +
+                       "<enddate/>" +
+                       "<consofmeters/>" +
+                       "<motorhours/>" +
+                       "<cuts/>" +
+                       "<note/>" +
+                       "</ZAPSIoperation>" +
+                       "</ZAPSIoperations>";
+            return data;
+        }
+
+        private string GetUserLoginFor(ILogger logger) {
+            var userLogin = "";
             var connection = new MySqlConnection(
                 $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
             try {
                 connection.Open();
-                var selectQuery = $"SELECT * FROM zapsi2.terminal_input_order_user where TerminalInputOrderID = (SELECT OID from zapsi2.terminal_input_order where DTE is NULL and DeviceID={DeviceOid})";
+                var selectQuery = $"select * from User where OID in (SELECT UserId from zapsi2.terminal_input_order where DTE is NULL and DeviceID={DeviceOid})";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        userLogin = Convert.ToString(reader["Login"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking active order: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- Open order has userId: " + userLogin, logger);
+
+            return userLogin;
+        }
+
+        private int GetUserIdFor(ILogger logger) {
+            int userId = 0;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"SELECT * from zapsi2.terminal_input_order where DTE is NULL and DeviceID={DeviceOid}";
                 var command = new MySqlCommand(selectQuery, connection);
                 try {
                     var reader = command.ExecuteReader();
                     while (reader.Read()) {
-                        var userId = Convert.ToInt32(reader["UserID"]);
-                        listOfUsers.Add(userId);
+                        userId = Convert.ToInt32(reader["UserID"]);
                     }
 
                     reader.Close();
@@ -210,29 +229,67 @@ namespace terminalServerCore {
                 connection.Dispose();
             }
 
-            LogInfo("[ " + Name + " ] --INF-- Open order has no of additional users: " + listOfUsers.Count, logger);
+            LogInfo("[ " + Name + " ] --INF-- Actual terminal_input_order userid: " + userId, logger);
+
+            return userId;
+        }
+
+        private List<string> GetLoginUsersFor(ILogger logger) {
+            var listOfUsers = new List<string>();
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery =
+                    $"SELECT * from zapsi2.terminal_input_login where DTE is NULL and DeviceID={DeviceOid}";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        var userId = Convert.ToString(reader["Login"]);
+                        listOfUsers.Add(userId);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking terminal input login users: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- Open order has no of login users: " + listOfUsers.Count, logger);
 
             return listOfUsers;
         }
 
-        public string SendXml(string destinationUrl, string requestXml, ILogger logger) {
-            LogInfo("[ " + Name + " ] --INF-- Data: " +requestXml, logger);
+        public void SendXml(string destinationUrl, string requestXml, ILogger logger) {
+            LogInfo($"[ {Name} ] --INF-- Sending XML", logger);
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(destinationUrl);
             byte[] bytes = Encoding.UTF8.GetBytes(requestXml);
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = bytes.Length;
             request.Method = "POST";
-            Stream requestStream = request.GetRequestStream();
-            requestStream.Write(bytes, 0, bytes.Length);
-            HttpWebResponse response;
-            response = (HttpWebResponse) request.GetResponse();
-            if (response.StatusCode == HttpStatusCode.OK) {
-                Stream responseStream = response.GetResponseStream();
-                string responseStr = new StreamReader(responseStream).ReadToEnd();
-                return responseStr;
+            try {
+                Stream requestStream = request.GetRequestStream();
+                requestStream.Write(bytes, 0, bytes.Length);
+                HttpWebResponse response;
+                response = (HttpWebResponse) request.GetResponse();
+                if (response.StatusCode == HttpStatusCode.OK) {
+                    LogInfo($"[ {Name} ] --INF-- XML sent OK", logger);
+                    return;
+                }
+                LogInfo($"[ {Name} ] --INF-- XML not sent!!!", logger);
+            } catch {
+                LogInfo($"[ {Name} ] --INF-- XML not sent!!!", logger);
             }
-
-            return null;
         }
         
         private string GetOperationNo(int actualOrderId, ILogger logger) {
@@ -366,18 +423,19 @@ namespace terminalServerCore {
             return userLogin;
         }
         
-        private  List<int> GetAdditionalUsersFor(ILogger logger) {
-            var listOfUsers = new List<int>();
+        private  List<string> GetAdditionalUsersFor(ILogger logger) {
+            var listOfUsers = new List<string>();
             var connection = new MySqlConnection(
                 $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
             try {
                 connection.Open();
-                var selectQuery = $"SELECT * FROM zapsi2.terminal_input_order_user where TerminalInputOrderID = (SELECT OID from zapsi2.terminal_input_order where DTE is NULL and DeviceID={DeviceOid})";
+                var selectQuery =
+                    $"select * from User where OID in (SELECT UserId FROM zapsi2.terminal_input_order_user where TerminalInputOrderID = (SELECT OID from zapsi2.terminal_input_order where DTE is NULL and DeviceID={DeviceOid}))";
                 var command = new MySqlCommand(selectQuery, connection);
                 try {
                     var reader = command.ExecuteReader();
                     while (reader.Read()) {
-                        var userId = Convert.ToInt32(reader["UserID"]);
+                        var userId = Convert.ToString(reader["Login"]);
                         listOfUsers.Add(userId);
                     }
 
