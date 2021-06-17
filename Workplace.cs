@@ -126,6 +126,9 @@ namespace terminalServerCore {
                 var operationNo = GetOperationNo(actualOrderId, logger);
                 var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 var divisionName = "AL";
+                if (WorkplaceDivisionId == 3) {
+                    divisionName = "PL";
+                }
                 var orderData = CreateXml(divisionName, orderNo, operationNo, userLogin, time, "Production", "true");
                 LogInfo("[ " + Name + " ] --INF-- Sending production/true XML for user: "  +userLogin, logger);
                 SendXml(NavUrl, orderData, logger);

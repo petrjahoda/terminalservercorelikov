@@ -498,7 +498,7 @@ namespace terminalServerCore {
                             var operationNo = GetOperationNo(workplace, actualOrderId, logger);
                             var divisionName = "AL";
                             if (workplace.WorkplaceDivisionId == 3) {
-                                divisionName = "AL";
+                                divisionName = "PL";
                             }
                             var consOfMeters = GetConsOfMetersFor(workplace, logger);
                             var motorHours = GetMotorHoursFor(workplace, logger);
