@@ -30,14 +30,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1d44921a-99e7-44c4-993c-8fd2020c115c" name="Default Changelist" comment="Changed sending XML">
-      <change afterPath="$PROJECT_DIR$/publish.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/publish/Archive.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/contentModel.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/indexLayout.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Workplace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Workplace.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/publish/Archive.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/publish/terminalservercorelikov.dll" beforeDir="false" afterPath="$PROJECT_DIR$/publish/terminalservercorelikov.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/publish/terminalservercorelikov.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/publish/terminalservercorelikov.pdb" afterDir="false" />
     </list>
@@ -51,8 +46,8 @@
   </component>
   <component name="IdeDocumentHistory">
     <changedPaths>
-      <option value="$PROJECT_DIR$/Program.cs" />
       <option value="$PROJECT_DIR$/Workplace.cs" />
+      <option value="$PROJECT_DIR$/Program.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1l0BHyOus9b5zr7y6kgXRN2RfRz" />
@@ -125,6 +120,8 @@
       <workItem from="1615452124351" duration="2753000" />
       <workItem from="1623831158847" duration="207000" />
       <workItem from="1623911134818" duration="427000" />
+      <workItem from="1623911624570" duration="40000" />
+      <workItem from="1624337461289" duration="106000" />
     </task>
     <task id="LOCAL-00001" summary="Updated">
       <created>1606733450250</created>
@@ -161,7 +158,14 @@
       <option name="project" value="LOCAL" />
       <updated>1623911556009</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Changed sending XML">
+      <created>1623911651357</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1623911651357</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

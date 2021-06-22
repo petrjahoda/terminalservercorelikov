@@ -413,7 +413,7 @@ namespace terminalServerCore {
                 workplace.CheckForDefaultOrder(logger);
                 workplace.PreviousWorkshiftId = workplace.GetActualWorkShiftIdFor(logger);
 
-                while (_databaseIsOnline && _loopCanRun && _systemIsActivated) {
+                while (_systemIsActivated) {
                     LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Inside loop started for " + workplace.Name, logger);
 
                     workplace.AddProductionPort(logger);
