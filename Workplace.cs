@@ -124,17 +124,26 @@ namespace terminalServerCore {
                 var actualOrderId = GetOrderIdFor(logger);
                 var orderNo = GetOrderNo(actualOrderId, logger);
                 var operationNo = GetOperationNo(actualOrderId, logger);
+                var workplaceModeTypeId = GetWorkplaceModeTypeId(logger);
                 var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 var divisionName = "AL";
                 if (WorkplaceDivisionId == 3) {
                     divisionName = "PL";
                 }
-                var orderData = CreateXml(divisionName, orderNo, operationNo, userLogin, time, "Production", "true");
+                var operationType = "Production";
+                if (workplaceModeTypeId == 2) {
+                    operationType = "Rebuild";
+                } else if (workplaceModeTypeId == 3) {
+                    operationType = "Setup";
+                } else if (workplaceModeTypeId == 4) {
+                    operationType = "Spare";
+                }
+                var orderData = CreateXml(divisionName, orderNo, operationNo, userLogin, time, operationType, "true");
                 LogInfo("[ " + Name + " ] --INF-- Sending production/true XML for user: "  +userLogin, logger);
                 SendXml(NavUrl, orderData, logger);
                 var listOfUsers = GetAdditionalUsersFor(logger);
                 foreach (var actualUserLogin in listOfUsers) {
-                    var userData = CreateXml( divisionName, orderNo, operationNo, actualUserLogin, time, "Production", "false");
+                    var userData = CreateXml( divisionName, orderNo, operationNo, actualUserLogin, time, operationType, "false");
                     LogInfo("[ " + Name + " ] --INF-- Sending production/false XML for additional user: "  +userLogin, logger);
                     SendXml(NavUrl, userData, logger);
                 }
@@ -145,6 +154,42 @@ namespace terminalServerCore {
                     SendXml(NavUrl, userData, logger);
                 }
             }
+        }
+
+        private int GetWorkplaceModeTypeId(ILogger logger) {
+            var workplaceModeTypeId = 1;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                
+                var selectQuery = $"select * from workplace_mode where OID = (select WorkplaceModeID from terminal_input_order where DeviceID={DeviceOid} and DTE is null)";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        workplaceModeTypeId = Convert.ToInt32(reader["WorkplaceModeTypeID"]);
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking workplace mode type id: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- Open order has workplace mode type id: " + workplaceModeTypeId, logger);
+
+            return workplaceModeTypeId;
+            
         }
 
         private string CreateXml(string divisionName, string orderNo, string operationNo, string userLogin, string time, string operationType, string initiator) {

@@ -29,12 +29,57 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1d44921a-99e7-44c4-993c-8fd2020c115c" name="Default Changelist" comment="Changed sending XML">
+    <list default="true" id="1d44921a-99e7-44c4-993c-8fd2020c115c" name="Default Changelist" comment="Changed running the inside loop">
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Bcl.AsyncInterfaces.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.Configuration.Abstractions.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.Configuration.Binder.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.Configuration.FileExtensions.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.Configuration.Json.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.Configuration.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.DependencyInjection.Abstractions.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.DependencyInjection.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.FileProviders.Abstractions.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.FileProviders.Physical.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.FileSystemGlobbing.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.Logging.Abstractions.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.Logging.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.Options.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Extensions.Primitives.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Microsoft.Win32.Registry.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/MySqlConnector.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Newtonsoft.Json.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Serilog.Extensions.Logging.File.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Serilog.Extensions.Logging.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Serilog.Formatting.Compact.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Serilog.Sinks.Async.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Serilog.Sinks.File.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Serilog.Sinks.RollingFile.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/Serilog.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/System.Data.SqlClient.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/System.Diagnostics.DiagnosticSource.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/System.Runtime.CompilerServices.Unsafe.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/System.Security.AccessControl.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/System.Security.Principal.Windows.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/System.Text.Encoding.CodePages.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/System.Text.Encodings.Web.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/System.Text.Json.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/unix/lib/netcoreapp2.1/System.Security.Principal.Windows.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/unix/lib/netstandard2.0/Microsoft.Win32.Registry.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/win-arm64/native/sni.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/win-x64/native/sni.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/win-x86/native/sni.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/win/lib/netcoreapp2.0/System.Security.AccessControl.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/win/lib/netcoreapp2.0/System.Text.Encoding.CodePages.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/win/lib/netcoreapp2.1/System.Security.Principal.Windows.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/runtimes/win/lib/netstandard2.0/Microsoft.Win32.Registry.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/terminalservercorelikov.deps.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/terminalservercorelikov.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/terminalservercorelikov.pdb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/publish/terminalservercorelikov.runtimeconfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.terminalservercorelikov/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/Archive.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/terminalservercorelikov.dll" beforeDir="false" afterPath="$PROJECT_DIR$/publish/terminalservercorelikov.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/publish/terminalservercorelikov.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/publish/terminalservercorelikov.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Workplace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Workplace.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,8 +91,8 @@
   </component>
   <component name="IdeDocumentHistory">
     <changedPaths>
-      <option value="$PROJECT_DIR$/Workplace.cs" />
       <option value="$PROJECT_DIR$/Program.cs" />
+      <option value="$PROJECT_DIR$/Workplace.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1l0BHyOus9b5zr7y6kgXRN2RfRz" />
@@ -121,7 +166,11 @@
       <workItem from="1623831158847" duration="207000" />
       <workItem from="1623911134818" duration="427000" />
       <workItem from="1623911624570" duration="40000" />
-      <workItem from="1624337461289" duration="106000" />
+      <workItem from="1624337461289" duration="229000" />
+      <workItem from="1624432221760" duration="3000" />
+      <workItem from="1625637552931" duration="407000" />
+      <workItem from="1625638354291" duration="57000" />
+      <workItem from="1625649429255" duration="663000" />
     </task>
     <task id="LOCAL-00001" summary="Updated">
       <created>1606733450250</created>
@@ -165,7 +214,21 @@
       <option name="project" value="LOCAL" />
       <updated>1623911651357</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Changed running the inside loop">
+      <created>1624337623360</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1624337623360</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Changed running the inside loop">
+      <created>1624337660359</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1624337660359</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -203,6 +266,7 @@
     <MESSAGE value="Updated startdate in XML to &quot;&lt;startdate&gt;&quot;+ DateTime.Now.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;) + &quot;&lt;/startdate&gt;&quot; +" />
     <MESSAGE value="Added sending XML when workplace offline." />
     <MESSAGE value="Changed sending XML" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed sending XML" />
+    <MESSAGE value="Changed running the inside loop" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed running the inside loop" />
   </component>
 </project>
